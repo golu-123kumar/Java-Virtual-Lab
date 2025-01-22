@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array to Binary Search Tree</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: springgreen;
+            display: flex;
+            padding: 20px;
+        }
+        .container {
+            background-color: aquamarine;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 1.5);
+            width: 300px;
+            margin-right: 20px;
+            margin-top: 10px;
+            padding-top: 5px; 
+
+        }
+        h1 {
+            text-align: center;
+        }
+        input {
+            width: 94%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid black;
+           
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px; 
+        }
+        button:hover {
+            opacity: 0.8; 
+        }
+        .clear-button {
+            background-color: red; 
+        }
+        .preorder {
+            background-color: blue; 
+        }
+        .post {
+            background-color: blue; 
+        }
+        .inorder {
+            background-color: blue; 
+        }
+        .insert{
+            background-color: yellow;
+            color:black;
+        }
+        
+        #tree {
+            margin-top: 20px;
+            position: relative;
+            width: 1000px; 
+            height: 600px; 
+            background-color: aquamarine; 
+            border: 2px solid #007BFF; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 1.5);
+        }
+        .node {
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            background-color: #ffffff; 
+            padding: 10px;
+            width: 40px;
+            text-align: center;
+        }
+        #traversalResult {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Binary Search Tree Visualizer</h1>
+        <form id="bstForm" onsubmit="event.preventDefault(); insertAndDraw();">
+            <label for="arrayInput">Enter a number:</label>
+            <input type="text" id="arrayInput" name="arrayInput" required>
+            <button  class="insert" type="submit">Insert</button>
+        </form>
+        
+        <button  class="inorder" onclick="traverse('inorder')">Inorder Traversal</button>
+        <button class="preorder" onclick="traverse('preorder')">Preorder Traversal</button>
+        <button class="post" onclick="traverse('postorder')">Postorder Traversal</button>
+        <button class="clear-button" onclick="clearTree()">Clear Tree</button>
+        <div id="traversalResult"></div> <!-- Display traversal results here -->
+    </div>
+
+    <svg id="tree" viewBox="0 0 800 600"></svg>
+
+    <script>
+        
+        class Node {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+            }
+        }
+
+        
+        class BST {
+            constructor() {
+                this.root = null;
+            }
+
+            insert(value) {
+                this.root = this.insertRec(this.root, value);
+            }
+
+            insertRec(root, value) {
+                if (root === null) {
+                    return new Node(value);
+                }
+                if (value < root.value) {
+                    root.left = this.insertRec(root.left, value);
+                } else if (value > root.value) {
+                    root.right = this.insertRec(root.right, value);
+                }
+                return root;
+            }
+
+            inorder() {
+                return this._traverseInorder(this.root);
+            }
+
+            _traverseInorder(node) {
+                const result = [];
+                if (node) {
+                    result.push(...this._traverseInorder(node.left));
+                    result.push(node.value);
+                    result.push(...this._traverseInorder(node.right));
+                }
+                return result;
+            }
+
+            preorder() {
+                return this._traversePreorder(this.root);
+            }
+
+            _traversePreorder(node) {
+                const result = [];
+                if (node) {
+                    result.push(node.value);
+                    result.push(...this._traversePreorder(node.left));
+                    result.push(...this._traversePreorder(node.right));
+                }
+                return result;
+            }
+
+            postorder() {
+                return this._traversePostorder(this.root);
+            }
+
+            _traversePostorder(node) {
+                const result = [];
+                if (node) {
+                    result.push(...this._traversePostorder(node.left));
+                    result.push(...this._traversePostorder(node.right));
+                    result.push(node.value);
+                }
+                return result;
+            }
+
+            clear() {
+                this.root = null;  
+            }
+        }
+
+        
+        const bst = new BST();
+
+        // Insert the input number into the BST and re-draw the tree
+        function insertAndDraw() {
+            const input = document.getElementById('arrayInput').value;
+            const value = parseInt(input.trim());
+
+            if (!isNaN(value)) {
+                bst.insert(value);  // Insert value into the BST
+
+                const svg = document.getElementById('tree');
+                svg.innerHTML = '';  // Clear previous tree visualization
+                drawTreeNodes(bst.root, 400, 20, svg, 120);  // Adjusted spacing for better visualization
+            }
+
+            document.getElementById('arrayInput').value = '';  // Clear input field after insertion
+        }
+
+        // Clear the BST and the SVG tree
+        function clearTree() {
+            bst.clear();
+            document.getElementById('tree').innerHTML = '';  // Clear SVG visualization
+            document.getElementById('traversalResult').textContent = '';  // Clear traversal results
+        }
+
+        // Traverse the BST and display the result
+        function traverse(order) {
+            let result;
+            switch (order) {
+                case 'inorder':
+                    result = bst.inorder();
+                    break;
+                case 'preorder':
+                    result = bst.preorder();
+                    break;
+                case 'postorder':
+                    result = bst.postorder();
+                    break;
+            }
+            document.getElementById('traversalResult').textContent = `${order.charAt(0).toUpperCase() + order.slice(1)} Traversal: ${result.join(', ')}`;
+        }
+
+        // Function to draw the tree nodes on the SVG canvas
+        function drawTreeNodes(node, x, y, svg, spacing) {
+            if (!node) return;
+
+            // Create a group (g) element for the node
+            const nodeElement = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+            // Create a rectangle (rect) for the node
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttribute("x", x);
+            rect.setAttribute("y", y);
+            rect.setAttribute("width", 40);
+            rect.setAttribute("height", 30);
+            rect.setAttribute("fill", "lightgreen"); // Node fill color
+            rect.setAttribute("stroke", "#007BFF");
+            rect.setAttribute("rx", 5);
+            rect.setAttribute("ry", 5);
+            nodeElement.appendChild(rect);
+
+            // Create text to display the node's value
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", x + 20);
+            text.setAttribute("y", y + 20);
+            text.setAttribute("text-anchor", "middle");
+            text.textContent = node.value;
+            nodeElement.appendChild(text);
+
+            // Append the node to the SVG
+            svg.appendChild(nodeElement);
+
+            // Draw left child if it exists
+            if (node.left) {
+                const childX = x - spacing;
+                const childY = y + 80; // Increased distance for better clarity
+                drawTreeNodes(node.left, childX, childY, svg, spacing / 1.5); // Adjusted spacing for children
+
+                // Draw a line to the left child
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", x + 20);
+                line.setAttribute("y1", y + 30);
+                line.setAttribute("x2", childX + 20);
+                line.setAttribute("y2", childY);
+                line.setAttribute("stroke", "#007BFF");
+                svg.appendChild(line);
+            }
+
+            // Draw right child if it exists
+            if (node.right) {
+                const childX = x + spacing;
+                const childY = y + 80; // Increased distance for better clarity
+                drawTreeNodes(node.right, childX, childY, svg, spacing / 1.5); // Adjusted spacing for children
+
+                // Draw a line to the right child
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", x + 20);
+                line.setAttribute("y1", y + 30);
+                line.setAttribute("x2", childX + 20);
+                line.setAttribute("y2", childY);
+                line.setAttribute("stroke", "#007BFF");
+                svg.appendChild(line);
+            }
+        }
+    </script>
+</body>
+</html>
