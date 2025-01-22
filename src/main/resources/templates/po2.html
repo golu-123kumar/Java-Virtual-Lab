@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postfix Conversion Result</title>
+    <style>
+        .result-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .f {
+            white-space: pre-wrap; /* Preserve whitespace for line breaks */
+            font-size: larger;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <h1>Converted Postfix Expression:</h1>
+        <!-- Displaying the postfix result using Thymeleaf -->
+        <div class="f">
+            <p th:text="${postfix}"></p> <!-- Thymeleaf tag to render postfix expression -->
+        </div>
+        <br>
+        <a href="/">Back to Home</a> <!-- Link to go back to the homepage -->
+    </div>
+</body>
+</html>
