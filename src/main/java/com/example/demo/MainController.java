@@ -256,6 +256,7 @@ private int precedence(char operator) {
         if (binary == null || binary.trim().isEmpty()) {
             return "Invalid input"; // Handle empty input
         }
+
         
         return binaryToGray(binary); // Convert and return gray code result
     }
